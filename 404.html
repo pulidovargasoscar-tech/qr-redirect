@@ -35,77 +35,19 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .buttons { margin-top: 1.5rem; }
-    .buttons a {
-      display: inline-block;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    .btn-local { background: #27ae60; color: white; }
-    .btn-ngrok { background: #3498db; color: white; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="spinner"></div>
-    <p>Redireccionando...</p>
-    <div class="buttons" id="buttons" style="display:none;">
-      <a href="#" class="btn-local" id="btnLocal">Conexion Local</a>
-      <a href="#" class="btn-ngrok" id="btnNgrok">Conexion Externa</a>
-    </div>
+    <p>Redireccionando al formulario de registro...</p>
   </div>
 
   <script>
-    (function() {
-      var LOCAL_IP = 'http://10.10.12.236:3003';
-      var NGROK_URL = 'https://shrug-snowdrop-buddy.ngrok-free.dev';
-      var TIMEOUT_MS = 3000;
-
-      var currentPath = window.location.pathname.replace(/^\/qr-redirect/, '') || '/';
-      var fullParams = window.location.search || '';
-
-      var btnLocal = document.getElementById('btnLocal');
-      var btnNgrok = document.getElementById('btnNgrok');
-
-      btnLocal.href = LOCAL_IP + currentPath + fullParams;
-      btnNgrok.href = NGROK_URL + currentPath + fullParams;
-
-      var redirected = false;
-      var img = new Image();
-
-      var timeoutId = setTimeout(function() {
-        if (!redirected) {
-          redirected = true;
-          window.location.href = NGROK_URL + currentPath + fullParams;
-        }
-      }, TIMEOUT_MS);
-
-      img.onload = function() {
-        if (!redirected) {
-          redirected = true;
-          clearTimeout(timeoutId);
-          window.location.href = LOCAL_IP + currentPath + fullParams;
-        }
-      };
-
-      img.onerror = function() {
-        if (!redirected) {
-          redirected = true;
-          clearTimeout(timeoutId);
-          window.location.href = NGROK_URL + currentPath + fullParams;
-        }
-      };
-
-      img.src = LOCAL_IP + '/favicon.ico?t=' + Date.now();
-
-      setTimeout(function() {
-        document.getElementById('buttons').style.display = 'block';
-      }, 1500);
-    })();
+    var NGROK_URL = 'https://shrug-snowdrop-buddy.ngrok-free.dev';
+    var currentPath = window.location.pathname.replace(/^\/qr-redirect/, '') || '/';
+    var fullParams = window.location.search || '';
+    window.location.href = NGROK_URL + currentPath + fullParams;
   </script>
 </body>
 </html>
