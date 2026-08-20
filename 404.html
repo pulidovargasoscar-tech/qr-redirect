@@ -35,42 +35,76 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .buttons { margin-top: 1.5rem; }
+    .buttons a {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .btn-local { background: #27ae60; color: white; }
+    .btn-ngrok { background: #3498db; color: white; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="spinner"></div>
     <p>Redireccionando...</p>
+    <div class="buttons" id="buttons" style="display:none;">
+      <a href="#" class="btn-local" id="btnLocal">Conexion Local</a>
+      <a href="#" class="btn-ngrok" id="btnNgrok">Conexion Externa</a>
+    </div>
   </div>
 
   <script>
     (function() {
-      const LOCAL_IP = 'http://10.10.12.236:3003';
-      const NGROK_URL = 'https://shrug-snowdrop-buddy.ngrok-free.dev';
-      const TIMEOUT_MS = 2000;
+      var LOCAL_IP = 'http://10.10.12.236:3003';
+      var NGROK_URL = 'https://shrug-snowdrop-buddy.ngrok-free.dev';
+      var TIMEOUT_MS = 3000;
 
-      let currentPath = window.location.pathname;
-      currentPath = currentPath.replace(/^\/qr-redirect/, '') || '/';
-      const currentSearch = window.location.search;
-      const fullParams = currentSearch || '';
+      var currentPath = window.location.pathname.replace(/^\/qr-redirect/, '') || '/';
+      var fullParams = window.location.search || '';
 
-      const testImg = new Image();
+      var btnLocal = document.getElementById('btnLocal');
+      var btnNgrok = document.getElementById('btnNgrok');
 
-      const timeoutId = setTimeout(function() {
-        window.location.href = NGROK_URL + currentPath + fullParams;
+      btnLocal.href = LOCAL_IP + currentPath + fullParams;
+      btnNgrok.href = NGROK_URL + currentPath + fullParams;
+
+      var redirected = false;
+      var img = new Image();
+
+      var timeoutId = setTimeout(function() {
+        if (!redirected) {
+          redirected = true;
+          window.location.href = NGROK_URL + currentPath + fullParams;
+        }
       }, TIMEOUT_MS);
 
-      testImg.onload = function() {
-        clearTimeout(timeoutId);
-        window.location.href = LOCAL_IP + currentPath + fullParams;
+      img.onload = function() {
+        if (!redirected) {
+          redirected = true;
+          clearTimeout(timeoutId);
+          window.location.href = LOCAL_IP + currentPath + fullParams;
+        }
       };
 
-      testImg.onerror = function() {
-        clearTimeout(timeoutId);
-        window.location.href = NGROK_URL + currentPath + fullParams;
+      img.onerror = function() {
+        if (!redirected) {
+          redirected = true;
+          clearTimeout(timeoutId);
+          window.location.href = NGROK_URL + currentPath + fullParams;
+        }
       };
 
-      testImg.src = LOCAL_IP + '/favicon.ico?t=' + Date.now();
+      img.src = LOCAL_IP + '/favicon.ico?t=' + Date.now();
+
+      setTimeout(function() {
+        document.getElementById('buttons').style.display = 'block';
+      }, 1500);
     })();
   </script>
 </body>
